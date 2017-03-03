@@ -1,5 +1,7 @@
 package edu.oregonstate.cs361.battleship;
 
+import java.util.ArrayList;
+
 /**
  * Created by michaelhilton on 1/5/17.
  */
@@ -23,13 +25,15 @@ abstract public class Ship {
 
     }
 
-    public boolean covers(Coordinate test) {
+    public boolean covers(Coordinate test, ArrayList<Coordinate> playerHits) {
         //horizontal
         if(start.getAcross() == end.getAcross()){
             if(test.getAcross() == start.getAcross()){
                 if((test.getDown() >= start.getDown()) &&
-                (test.getDown() <= end.getDown()))
-                return true;
+                (test.getDown() <= end.getDown())) {
+                    playerHits.add(test);
+                    return true;
+                }
             } else {
                 return false;
             }
@@ -38,8 +42,10 @@ abstract public class Ship {
         else{
             if(test.getDown() == start.getDown()){
                 if((test.getAcross() >= start.getAcross()) &&
-                        (test.getAcross() <= end.getAcross()))
+                        (test.getAcross() <= end.getAcross())) {
+                    playerHits.add(test);
                     return true;
+                }
             } else {
                 return false;
             }
