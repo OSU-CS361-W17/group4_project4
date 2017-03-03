@@ -92,9 +92,9 @@ public class BattleshipModel {
             computerHits.add(coor);
         }else if (computer_battleship.covers(coor)){
             computerHits.add(coor);
-        }else if (computer_cruiser.covers(coor)){
+        }else if (computer_clipper.covers(coor)){
             computerHits.add(coor);
-        }else if (computer_destroyer.covers(coor)){
+        }else if (computer_dinghy.covers(coor)){
             computerHits.add(coor);
         }else if (computer_submarine.covers(coor)){
             computerHits.add(coor);
