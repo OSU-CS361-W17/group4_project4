@@ -1,4 +1,5 @@
 var gameModel;
+var scanChecker=0;
 
 $( document ).ready(function() {
   // Handler for .ready() called.
@@ -62,6 +63,7 @@ function fire(){
 }
 
 function scan(){
+  scanChecker+=1;
  console.log($( "#colScan" ).val());
    console.log($( "#rowScan" ).val());
 //var menuId = $( "ul.nav" ).first().attr( "id" );
@@ -94,11 +96,16 @@ function displayGameState(gameModel){
 $( '#MyBoard td'  ).css("background-color", "blue");
 $( '#TheirBoard td'  ).css("background-color", "blue");
 
+if(scanChecker==1){
+scanChecker-=1;
 if(gameModel.scanResult){
-alert("Scan found at least one Ship")}
+    alert("Scan found at least one Ship")}
 else{
-alert("Scan found no Ships")}
+    alert("Scan found no Ships")}
 
+
+
+}
 displayShip(gameModel.aircraftCarrier);
 displayShip(gameModel.battleship);
 displayShip(gameModel.cruiser);
