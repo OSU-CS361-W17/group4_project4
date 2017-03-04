@@ -13,6 +13,7 @@ public class CivilianShip extends Ship {
 
     //adds all coordinates of the ship to the hit list,
     //only for civilian ships
+    @Override
     public void shipHit(Coordinate c, ArrayList<Coordinate> list) {
         //horizontal
         if (start.getAcross() == end.getAcross()) {
