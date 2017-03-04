@@ -10,6 +10,7 @@ public class StealthShip extends MilitaryShip {
         super(n, l, s, e); //calls constructor of Ship
     }
 
+    @Override
     public boolean scan(Coordinate coor) {
         return false;
     }
