@@ -44,6 +44,8 @@ class ShipTest {
     public void testScan() {
         Ship s = new Ship("AircraftCarrier",5, new Coordinate(5,2),new Coordinate(5,7));
         assertEquals(false,s.scan(new Coordinate(1,1)));
+        assertEquals(false,s.scan(new Coordinate(10,10)));
+
         assertEquals(true,s.scan(new Coordinate(4,2)));
         assertEquals(true,s.scan(new Coordinate(5,2)));
         assertEquals(true,s.scan(new Coordinate(6,2)));
