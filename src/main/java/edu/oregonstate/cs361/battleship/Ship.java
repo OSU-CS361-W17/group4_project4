@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by michaelhilton on 1/5/17.
  */
-abstract public class Ship {
+public class Ship {
     private String name;
     private int length;
     protected Coordinate start;
@@ -25,36 +25,8 @@ abstract public class Ship {
 
     }
 
-    public boolean covers(Coordinate test, ArrayList<Coordinate> playerHits) {
-        //horizontal
-        if(start.getAcross() == end.getAcross()){
-            if(test.getAcross() == start.getAcross()){
-                if((test.getDown() >= start.getDown()) &&
-                (test.getDown() <= end.getDown())) {
-                    playerHits.add(test);
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        }
-        //vertical
-        else{
-            if(test.getDown() == start.getDown()){
-                if((test.getAcross() >= start.getAcross()) &&
-                        (test.getAcross() <= end.getAcross())) {
-                    playerHits.add(test);
-                    return true;
-                }
-            } else {
-                return false;
-            }
 
-        }
-        return false;
-    }
-
-    //an override of covers that is used within scan
+    //returns a list of points to be marked as hits, or null if
     public boolean covers(Coordinate test) {
         //horizontal
         if(start.getAcross() == end.getAcross()){
@@ -78,6 +50,10 @@ abstract public class Ship {
 
         }
         return false;
+    }
+
+    public void shipHit(Coordinate c, ArrayList<Coordinate> list) {
+        list.add(c);
     }
 
     public String getName() {

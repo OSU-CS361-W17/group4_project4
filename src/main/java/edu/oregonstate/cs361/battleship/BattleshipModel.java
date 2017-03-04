@@ -62,10 +62,10 @@ public class BattleshipModel {
                 this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt+5));
             } if(shipName.equalsIgnoreCase("battleship")) {
                 this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt+4));
-            } if(shipName.equalsIgnoreCase("Cruiser")) {
-                this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt+3));
-            } if(shipName.equalsIgnoreCase("destroyer")) {
+            } if(shipName.equalsIgnoreCase("clipper")) {
                 this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt+2));
+            } if(shipName.equalsIgnoreCase("dinghy")) {
+                this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt));
             }if(shipName.equalsIgnoreCase("submarine")) {
                 this.getShip(shipName).setLocation(new Coordinate(rowint, colInt), new Coordinate(rowint, colInt + 2));
             }
@@ -75,10 +75,10 @@ public class BattleshipModel {
                     this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint+5,colInt));
                 } if(shipName.equalsIgnoreCase("battleship")) {
                     this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint+4,colInt));
-                } if(shipName.equalsIgnoreCase("Cruiser")) {
-                    this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint+3,colInt));
-                } if(shipName.equalsIgnoreCase("destroyer")) {
+                } if(shipName.equalsIgnoreCase("clipper")) {
                     this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint+2,colInt));
+                } if(shipName.equalsIgnoreCase("dinghy")) {
+                    this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt));
                 }if(shipName.equalsIgnoreCase("submarine")) {
                     this.getShip(shipName).setLocation(new Coordinate(rowint, colInt), new Coordinate(rowint + 2, colInt));
                 }
@@ -89,15 +89,15 @@ public class BattleshipModel {
     public void shootAtComputer(int row, int col) {
         Coordinate coor = new Coordinate(row,col);
         if(computer_aircraftCarrier.covers(coor)){
-            computerHits.add(coor);
+            computer_aircraftCarrier.shipHit(coor, computerHits);
         }else if (computer_battleship.covers(coor)){
-            computerHits.add(coor);
+            computer_battleship.shipHit(coor, computerHits);
         }else if (computer_clipper.covers(coor)){
-            computerHits.add(coor);
+            computer_clipper.shipHit(coor, computerHits);
         }else if (computer_dinghy.covers(coor)){
-            computerHits.add(coor);
+            computer_dinghy.shipHit(coor, computerHits);
         }else if (computer_submarine.covers(coor)){
-            computerHits.add(coor);
+            computer_submarine.shipHit(coor, computerHits);
         } else {
             computerMisses.add(coor);
         }
@@ -121,11 +121,17 @@ public class BattleshipModel {
 
         //checks all ships, inputing playerHits for the sake
         //of civilian ships
-        if(!aircraftCarrier.covers(coor, playerHits)
-                || !battleship.covers(coor, playerHits)
-                || !clipper.covers(coor, playerHits)
-                || !dinghy.covers(coor, playerHits)
-                || !submarine.covers(coor, playerHits)) {
+        if(aircraftCarrier.covers(coor)){
+            aircraftCarrier.shipHit(coor, playerHits);
+        }else if (battleship.covers(coor)){
+            battleship.shipHit(coor, playerHits);
+        }else if (clipper.covers(coor)){
+            clipper.shipHit(coor, playerHits);
+        }else if (dinghy.covers(coor)){
+            dinghy.shipHit(coor, playerHits);
+        }else if (submarine.covers(coor)){
+            submarine.shipHit(coor, playerHits);
+        } else {
             playerMisses.add(coor);
         }
     }
