@@ -40,7 +40,16 @@ public class Main {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        BattleshipModel modelFromReq = gson.fromJson(result, BattleshipModel.class);
+
+        BattleshipModel modelFromReq = null;
+
+        try {
+            modelFromReq = gson.fromJson(result, BattleshipModel.class);
+        }
+
+        catch (Exception e){
+            e.printStackTrace();
+        }
         return modelFromReq;
     }
 
