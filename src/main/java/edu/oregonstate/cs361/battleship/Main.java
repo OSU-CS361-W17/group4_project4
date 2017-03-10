@@ -56,11 +56,13 @@ public class Main {
     //This controller
     private static String placeShip(Request req) {
         BattleshipModel currModel = getModelFromReq(req);
+        currModel.createShipArrays();
         String id = req.params("id");
         String row = req.params("row");
         String col = req.params("col");
         String orientation = req.params("orientation");
         currModel = currModel.placeShip(id,row,col,orientation);
+        currModel.deleteShipArrays();
         Gson gson = new Gson();
         return gson.toJson(currModel);
     }
@@ -68,12 +70,14 @@ public class Main {
     private static String fireAt(Request req) {
 
         BattleshipModel currModel = getModelFromReq(req);
+        currModel.createShipArrays();
         String row = req.params("row");
         String col = req.params("col");
         int rowInt = Integer.parseInt(row);
         int colInt = Integer.parseInt(col);
-        currModel.shootAtComputer(rowInt,colInt);
-        currModel.shootAtPlayer();
+        if(!currModel.shootAtComputer(rowInt,colInt))
+            currModel.shootAtPlayer();
+        currModel.deleteShipArrays();
         Gson gson = new Gson();
         return gson.toJson(currModel);
     }
@@ -82,12 +86,14 @@ public class Main {
     private static String scan(Request req) {
 
         BattleshipModel currModel = getModelFromReq(req);
+        currModel.createShipArrays();
         String row = req.params("row");
         String col = req.params("col");
         int rowInt = Integer.parseInt(row);
         int colInt = Integer.parseInt(col);
         currModel.scan(rowInt,colInt);
         currModel.shootAtPlayer();
+        currModel.deleteShipArrays();
         Gson gson = new Gson();
         return gson.toJson(currModel);
     }
