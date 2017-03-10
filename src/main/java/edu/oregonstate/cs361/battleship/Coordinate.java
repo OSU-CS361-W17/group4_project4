@@ -12,6 +12,14 @@ public class Coordinate {
         Down = col;
     }
 
+    public boolean sameCoordinateTest(Coordinate c) {
+        if (c.getRow() == this.Across && c.getCol() == this.Down) {
+            return true;
+        }
+
+        return false;
+    }
+
     public int getCol() {
         return Down;
     }

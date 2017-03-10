@@ -80,35 +80,65 @@ public class BattleshipModel {
     }
 
     private boolean overlapLoop(Ship s) {
-        return aircraftCarrier.overlapTest(s) || battleship.overlapTest(s) || clipper.overlapTest(s) || dinghy.overlapTest(s) || submarine.overlapTest(s);
+        return aircraftCarrier.overlapTest(s)
+                || battleship.overlapTest(s)
+                || clipper.overlapTest(s)
+                || dinghy.overlapTest(s)
+                || submarine.overlapTest(s);
     }
 
     public void shootAtComputer(int row, int col) {
-        Coordinate coor = new Coordinate(row,col);
-        if(computer_aircraftCarrier.covers(coor)){
-            computer_aircraftCarrier.shipHit(coor, computerHits);
-        }else if (computer_battleship.covers(coor)){
-            computer_battleship.shipHit(coor, computerHits);
-        }else if (computer_clipper.covers(coor)){
-            computer_clipper.shipHit(coor, computerHits);
-        }else if (computer_dinghy.covers(coor)){
-            computer_dinghy.shipHit(coor, computerHits);
-        }else if (computer_submarine.covers(coor)){
-            computer_submarine.shipHit(coor, computerHits);
-        } else {
-            computerMisses.add(coor);
+        Coordinate shot = new Coordinate(row, col);
+
+        if(!validShotTest(shot))
+            errorMessage = "This shot is invalid.";
+
+        if(computer_aircraftCarrier.covers(shot))
+            computer_aircraftCarrier.shipHit(shot, computerHits);
+
+        else if (computer_battleship.covers(shot))
+            computer_battleship.shipHit(shot, computerHits);
+
+        else if (computer_clipper.covers(shot))
+            computer_clipper.shipHit(shot, computerHits);
+
+        else if (computer_dinghy.covers(shot))
+            computer_dinghy.shipHit(shot, computerHits);
+
+        else if (computer_submarine.covers(shot))
+            computer_submarine.shipHit(shot, computerHits);
+
+        else
+            computerMisses.add(shot);
+    }
+
+    public boolean validShotTest(Coordinate shot) {
+        //loops to check shot validity
+        for(Coordinate c: computerHits) {
+            if(shot.sameCoordinateTest(c))
+                return false;
         }
+        for(Coordinate c: computerMisses) {
+            if(shot.sameCoordinateTest(c))
+                return false;
+        }
+        if(shot.getRow() > this.MAX || shot.getRow() < this.MIN
+                || shot.getCol() > this.MAX || shot.getCol() < this.MIN)
+            return false;
+
+        return true;
     }
 
     public void shootAtPlayer() {
-        int max = 10;
-        int min = 1;
         Random random = new Random();
-        int randRow = random.nextInt(max - min + 1) + min;
-        int randCol = random.nextInt(max - min + 1) + min;
+        Coordinate shot;
+        do {
+            int randRow = random.nextInt(this.MAX - this.MIN + 1) + this.MIN;
+            int randCol = random.nextInt(this.MAX - this.MIN + 1) + this.MIN;
+            shot = new Coordinate(randRow, randCol);
+        } while (!validShotTest(shot));
 
-        Coordinate coor = new Coordinate(randRow,randCol);
-        playerShot(coor);
+        playerShot(shot);
     }
 
     void playerShot(Coordinate coor) {
@@ -135,26 +165,17 @@ public class BattleshipModel {
     }
 
 
-    public void scan(int rowInt, int colInt) {
-        Coordinate coor = new Coordinate(rowInt,colInt);
+    public void scan(int row, int col) {
+        Coordinate c = new Coordinate(row, col);
         scanResult = false;
-        if(computer_aircraftCarrier.scan(coor)){
-            scanResult = true;
-        }
-        else if (computer_battleship.scan(coor)){
-            scanResult = true;
-        }else if (computer_clipper.scan(coor)){
-            scanResult = true;
-        }else if (computer_dinghy.scan(coor)){
-            scanResult = true;
-        }else if (computer_submarine.scan(coor)){
+        if(computer_aircraftCarrier.scan(c)
+                || computer_battleship.scan(c)
+                || computer_clipper.scan(c)
+                || computer_dinghy.scan(c)
+                || computer_submarine.scan(c)) {
             scanResult = true;
         } else {
             scanResult = false;
         }
-    }
-
-    public boolean getScanResult() {
-        return scanResult;
     }
 }
