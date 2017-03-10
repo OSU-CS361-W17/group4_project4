@@ -7,24 +7,16 @@ public class Coordinate {
     private int Across;
     private int Down;
 
-    public Coordinate(int letter, int number) {
-        Across = letter;
-        Down = number;
+    public Coordinate(int row, int col) {
+        Across = row;
+        Down = col;
     }
 
-    public int getDown() {
+    public int getCol() {
         return Down;
     }
 
-    public void setDown(int down) {
-        Down = down;
-    }
-
-    public int getAcross() {
+    public int getRow() {
         return Across;
-    }
-
-    public void setAcross(int across) {
-        Across = across;
     }
 }

@@ -8,7 +8,8 @@ import java.util.Random;
  * Created by michaelhilton on 1/4/17.
  */
 public class BattleshipModel {
-
+    private static int MIN = 1;
+    private static int MAX = 10;
     private MilitaryShip aircraftCarrier = new MilitaryShip("AircraftCarrier",5, new Coordinate(0,0),new Coordinate(0,0));
     private StealthShip battleship = new StealthShip("Battleship",4, new Coordinate(0,0),new Coordinate(0,0));
     private CivilianShip clipper = new CivilianShip("Clipper",3, new Coordinate(0,0),new Coordinate(0,0));
@@ -27,6 +28,7 @@ public class BattleshipModel {
     private ArrayList<Coordinate> computerMisses;
 
     boolean scanResult = false;
+    private String errorMessage = "none";
 
 
 
@@ -55,35 +57,30 @@ public class BattleshipModel {
     }
 
     public BattleshipModel placeShip(String shipName, String row, String col, String orientation) {
-        int rowint = Integer.parseInt(row);
-        int colInt = Integer.parseInt(col);
-        if(orientation.equals("horizontal")){
-            if (shipName.equalsIgnoreCase("aircraftcarrier")) {
-                this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt+5));
-            } if(shipName.equalsIgnoreCase("battleship")) {
-                this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt+4));
-            } if(shipName.equalsIgnoreCase("clipper")) {
-                this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt+2));
-            } if(shipName.equalsIgnoreCase("dinghy")) {
-                this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt));
-            }if(shipName.equalsIgnoreCase("submarine")) {
-                this.getShip(shipName).setLocation(new Coordinate(rowint, colInt), new Coordinate(rowint, colInt + 2));
-            }
-        }else{
-            //vertical
-                if (shipName.equalsIgnoreCase("aircraftcarrier")) {
-                    this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint+5,colInt));
-                } if(shipName.equalsIgnoreCase("battleship")) {
-                    this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint+4,colInt));
-                } if(shipName.equalsIgnoreCase("clipper")) {
-                    this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint+2,colInt));
-                } if(shipName.equalsIgnoreCase("dinghy")) {
-                    this.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt));
-                }if(shipName.equalsIgnoreCase("submarine")) {
-                    this.getShip(shipName).setLocation(new Coordinate(rowint, colInt), new Coordinate(rowint + 2, colInt));
-                }
+        Coordinate start = new Coordinate(Integer.parseInt(row), Integer.parseInt(col));
+        Coordinate end;
+        Ship ship  = getShip(shipName);
+
+        if(orientation.equals("horizontal")) {
+            end = new Coordinate(start.getRow(), start.getCol() + ship.getLength() - 1);
+        } else {
+            end = new Coordinate(start.getRow() + ship.getLength() - 1, start.getCol());
         }
+
+        ship.setLocation(start, end);
+
+        if(start.getRow() < this.MIN || start.getCol() < this.MIN
+            || end.getRow() > this.MAX || end.getCol() > this.MAX || overlapLoop(ship)) {
+            this.errorMessage = "Cannot place ship here.";
+            ship.removeCoordinates();
+            return this;
+        }
+
         return this;
+    }
+
+    private boolean overlapLoop(Ship s) {
+        return aircraftCarrier.overlapTest(s) || battleship.overlapTest(s) || clipper.overlapTest(s) || dinghy.overlapTest(s) || submarine.overlapTest(s);
     }
 
     public void shootAtComputer(int row, int col) {
@@ -117,6 +114,7 @@ public class BattleshipModel {
     void playerShot(Coordinate coor) {
         if(playerMisses.contains(coor)){
             System.out.println("Dupe");
+
         }
 
         //checks all ships, inputing playerHits for the sake

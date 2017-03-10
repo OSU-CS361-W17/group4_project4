@@ -126,7 +126,10 @@ for (var i = 0; i < gameModel.playerHits.length; i++) {
    $( '#MyBoard #' + gameModel.playerHits[i].Across + '_' + gameModel.playerHits[i].Down ).css("background-color", "red");
 }
 
-
+if(gameModel.errorMessage !== "none") {
+    alert(gameModel.errorMessage);
+}
+gameModel.errorMessage = "none";
 
 }
 

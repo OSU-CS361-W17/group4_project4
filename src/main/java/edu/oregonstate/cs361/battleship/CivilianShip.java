@@ -16,12 +16,12 @@ public class CivilianShip extends Ship {
     @Override
     public void shipHit(Coordinate c, ArrayList<Coordinate> list) {
         //horizontal
-        if (start.getAcross() == end.getAcross()) {
+        if (this.isHorizantal()) {
             Coordinate temp = start;
             do {
                 list.add(temp);
-                temp = new Coordinate(temp.getAcross(),temp.getDown()+1);
-            } while(temp.getDown() <= end.getDown());
+                temp = new Coordinate(temp.getRow(),temp.getCol()+1);
+            } while(temp.getCol() <= end.getCol());
         }
 
         //vertical
@@ -29,8 +29,8 @@ public class CivilianShip extends Ship {
             Coordinate temp = start;
             do {
                 list.add(temp);
-                temp = new Coordinate(temp.getAcross()+1, temp.getDown());
-            } while(temp.getAcross() <= end.getAcross());
+                temp = new Coordinate(temp.getRow()+1, temp.getCol());
+            } while(temp.getRow() <= end.getRow());
         }
     }
 }
