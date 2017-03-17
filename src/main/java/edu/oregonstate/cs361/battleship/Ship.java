@@ -129,4 +129,23 @@ public class Ship {
         this.start = new Coordinate(0,0);
         this.end = new Coordinate(0,0);
     }
+
+    public boolean isSunk(BattleshipModel Model){
+        Coordinate temp = this.start;
+        if (this.isHorizantal()) {
+            do {
+                if(!Model.computerHits.contains(temp))
+                    return false;
+                temp = new Coordinate(temp.getRow(), temp.getCol()+1);
+            }while(temp.getCol() <= this.end.getCol());
+    }
+        else{
+            do {
+                if(!Model.computerHits.contains(temp))
+                    return false;
+                temp = new Coordinate(temp.getRow()+1, temp.getCol());
+            }while(temp.getCol() <= this.end.getCol());
+        }
+        return true;
+    }
 }
