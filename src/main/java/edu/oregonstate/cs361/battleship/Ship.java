@@ -86,19 +86,19 @@ public class Ship {
             return false;
         }
         //checks if both lines horizantal and overlapping
-        if (s.isHorizantal() == false && this.isHorizantal() == false
+        if (!(s.isHorizantal()) && !(this.isHorizantal())
                 && s.getEnd().getCol() == this.start.getCol()
                 && s.getEnd().getRow() >= this.start.getRow()) {
             return true;
         }
         //checks if both lines vertical and overlapping
-        else if (s.isHorizantal() == true && this.isHorizantal() == true
-                && s.getEnd().getRow() == this.start.getRow()
-                && s.getEnd().getCol() >= this.start.getCol()) {
+        else if (s.isHorizantal() && this.isHorizantal()
+                && s.getEnd().getCol() == this.start.getCol()
+                && s.getEnd().getRow() >= this.start.getRow()) {
             return true;
         }
         //checks if lines are perpendicular and overlapping while s is horizontal
-        else if (s.isHorizantal()
+        else if (s.isHorizantal() && !(this.isHorizantal())
                 && s.getEnd().getRow() >= this.start.getRow()         //new.end.y >= test.start.y
                 && s.getEnd().getRow() <= this.end.getRow()         //new.end.y <= test.end.y
                 && s.getStart().getCol() <= this.start.getCol()     //new.start.x <= test.start.x
@@ -106,7 +106,8 @@ public class Ship {
             return true;
         }
         //checks if lines are perp and overlapping while s is vertical
-        else if (this.end.getRow() >= s.getStart().getRow()
+        else if (!(s.isHorizantal()) && this.isHorizantal()
+                && this.end.getRow() >= s.getStart().getRow()
                 && this.end.getRow() <= s.getEnd().getRow()
                 && this.start.getCol() <= this.start.getCol()
                 && this.end.getCol() >= this.start.getCol()) {
