@@ -24,6 +24,27 @@ table, th, td {
 background-color: orange;
 }
 
+.miniBoard td {
+width: 10px;
+height: 10px;
+background-color:blue;
+}
+
+.left {
+display: inline-block;
+vertical-align: top;
+width: 500px;
+}
+
+.right {
+display: inline-block;
+vertical-align: top;
+}
+
+.playArea {
+width: 1000px;
+}
+
 /*
 button {
     margin: 0;
