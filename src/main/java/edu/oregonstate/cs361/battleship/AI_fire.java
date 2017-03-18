@@ -10,8 +10,8 @@ public class AI_fire {
     Random rand = new Random();
     private List<Coordinate> LastRound_Hit;
     private Coordinate Last_hit;
-    private Coordinate LastLast_hit;
-    private int Count_four = 0;
+    //private Coordinate LastLast_hit;
+    //private int Count_four = 0;
     private int Count_size = 0;
     private int mod = 0;
     private Coordinate mod_one_point;
@@ -20,11 +20,12 @@ public class AI_fire {
     private boolean engage=false;
     private int countRow = 0;
     private int countCol = 0;
-    private int modtwo_type;
+    //private int modtwo_type;
     ArrayList<Coordinate> poss = new ArrayList<Coordinate>();
+
     public Coordinate ai_openfire(BattleshipModel Model){
         Coordinate next_shot = null;
-        if(Model.computerHits.contains(Last_hit) && this.engage==false){
+        if(Model.computerHits.contains(this.Last_hit) && this.engage==false){
             this.engage=true;
             this.mod=1;
             this.mod_one_point=this.Last_hit;
@@ -55,7 +56,6 @@ public class AI_fire {
 
         Last_hit=next_shot;
         return next_shot;
-        
     }
 
     public Coordinate Random_firing(BattleshipModel Model) {
