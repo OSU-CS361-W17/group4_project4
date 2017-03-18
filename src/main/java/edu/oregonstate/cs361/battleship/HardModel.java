@@ -1,13 +1,18 @@
 package edu.oregonstate.cs361.battleship;
 
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.lang.*;
+
+import java.util.Random;
+
 
 /**
  * Created by geoscow on 3/18/17.
  */
 public class HardModel extends BattleshipModel {
+
     Random rand = new Random();
     private Coordinate Last_hit;
     private int Count_size = 0;
@@ -19,6 +24,7 @@ public class HardModel extends BattleshipModel {
     private int countRow = 0;
     private int countCol = 0;
     ArrayList<Coordinate> poss = new ArrayList<Coordinate>();
+
 
     @Override
     public void placeComputerShips() {
@@ -56,6 +62,7 @@ public class HardModel extends BattleshipModel {
     @Override
     public void shootAtPlayer() {
         //Coordinate shot = null;
+
 
         Coordinate shot =  ai_openfire();
         this.errorMessage = this.engage + " smart AI shoots at "+ shot.getRow() + "," + shot.getCol();
@@ -242,5 +249,11 @@ public class HardModel extends BattleshipModel {
         }
         return false;
     }
+
+        this.errorMessage = "smart AI shoots";
+        //playerShot(shot);
+    }
+
+
 
 }
