@@ -9,29 +9,30 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class CoordinateTest {
     @Test
-    void getDown() {
+    void getCol() {
         Coordinate c = new Coordinate(1,2);
-        assertEquals(2,c.getDown());
+        assertEquals(2,c.getCol());
+    }
+
+    
     }
 
     @Test
-    void setDown() {
-        Coordinate c = new Coordinate(1,1);
-        c.setDown(9);
-        assertEquals(9,c.getDown());
-    }
-
-    @Test
-    void getAcross() {
+    void getRow() {
         Coordinate c = new Coordinate(1,2);
         assertEquals(1,c.getAcross());
     }
 
-    @Test
+   /* @Test
     void setAcross() {
         Coordinate c = new Coordinate(1,1);
         c.setAcross(9);
         assertEquals(9,c.getAcross());
     }
+    @Test
+    void setDown() {
+        Coordinate c = new Coordinate(1,1);
+        c.setDown(9);
+        assertEquals(9,c.getCol());*/
 
 }
