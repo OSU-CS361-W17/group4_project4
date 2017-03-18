@@ -9,7 +9,6 @@ import java.util.Random;
 public class HardModel extends BattleshipModel {
     Random rand = new Random();
     private Coordinate Last_hit;
-    //private Coordinate LastLast_hit;
     private int Count_size = 0;
     private int mod = 0;
     private Coordinate mod_one_point;
@@ -143,7 +142,6 @@ public class HardModel extends BattleshipModel {
             Coordinate poss2 = new Coordinate(mod_one_point.getRow(), mod_one_point.getCol() + 1);
             Coordinate poss3 = new Coordinate(mod_one_point.getRow() - 1, mod_one_point.getCol());
             Coordinate poss4 = new Coordinate(mod_one_point.getRow() + 1, mod_one_point.getCol());
-            if (!Model.validShotTest(poss1))
             if (!AIvalidShotTest(poss1))
                 poss.add(poss1);
             if (!AIvalidShotTest(poss2))
