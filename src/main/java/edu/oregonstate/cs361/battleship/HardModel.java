@@ -1,7 +1,6 @@
 package edu.oregonstate.cs361.battleship;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -9,10 +8,8 @@ import java.util.Random;
  */
 public class HardModel extends BattleshipModel {
     Random rand = new Random();
-    private List<Coordinate> LastRound_Hit;
     private Coordinate Last_hit;
     //private Coordinate LastLast_hit;
-    //private int Count_four = 0;
     private int Count_size = 0;
     private int mod = 0;
     private Coordinate mod_one_point;
@@ -21,7 +18,6 @@ public class HardModel extends BattleshipModel {
     private boolean engage=false;
     private int countRow = 0;
     private int countCol = 0;
-    //private int modtwo_type;
     ArrayList<Coordinate> poss = new ArrayList<Coordinate>();
 
     @Override
@@ -60,58 +56,87 @@ public class HardModel extends BattleshipModel {
     @Override
     public void shootAtPlayer() {
         //Coordinate shot = null;
-        this.errorMessage = "smart AI shoots";
-        Coordinate shot =  ai_openfire(this);
+
+        Coordinate shot =  ai_openfire();
+        this.errorMessage = this.engage + " smart AI shoots at "+ shot.getRow() + "," + shot.getCol();
+        Last_hit=shot;
         playerShot(shot);
     }
 
-    public Coordinate ai_openfire(BattleshipModel Model){
+    public boolean AIvalidShotTest(Coordinate shot) {
+        //loops to check shot validity
+        for(Coordinate c: playerHits) {
+            if(shot.sameCoordinateTest(c))
+                return false;
+        }
+        for(Coordinate c: playerMisses) {
+            if(shot.sameCoordinateTest(c))
+                return false;
+        }
+        if(shot.getRow() > this.MAX || shot.getRow() < this.MIN
+                || shot.getCol() > this.MAX || shot.getCol() < this.MIN)
+            return false;
+
+        return true;
+    }
+
+    //AI function, main function which return the next shot coordinate
+    public Coordinate ai_openfire(){
         Coordinate next_shot = null;
-        if(Model.computerHits.contains(this.Last_hit) && this.engage==false){
+            for(Coordinate p : playerHits){
+        System.out.println("Hit Coordinate: ("+p.getRow()+","+p.getCol()+")");}
+        if(Last_hit!=null){
+            System.out.println("Last Hit point: ("+Last_hit.getRow()+","+Last_hit.getCol()+")");
+            System.out.println(this.playerHits.contains(this.Last_hit));
+            System.out.println(this.engage);
+        }
+
+        if(this.playerHits.contains(this.Last_hit) && !this.engage){
             this.engage=true;
             this.mod=1;
             this.mod_one_point=this.Last_hit;
         }
         if(!this.engage){
-            return Random_firing(Model);
+            return Random_firing();
         }
-        if(mod==0){
-            next_shot=Found_line(Model);
+        if(mod==1){
+            next_shot=Found_line();
             if(next_shot==null){
                 engage=false;
                 mod=0;
-                next_shot=Random_firing(Model);
+                next_shot=Random_firing();
             }
-        }
-        else if(mod==1){
-            next_shot=in_line(Model);
         }
         else if(mod==2){
-            next_shot=other_side(Model);
+            next_shot=in_line();
+        }
+        else if(mod==3){
+            next_shot=other_side();
             if(next_shot==null){
                 engage=false;
                 mod=0;
-                next_shot=Random_firing(Model);
+                next_shot=Random_firing();
             }
 
         }
 
-        Last_hit=next_shot;
+        //Last_hit=next_shot;
         return next_shot;
     }
 
-    public Coordinate Random_firing(BattleshipModel Model) {
+    //AI function, return coordinate to AI main, call when randomly select points
+    public Coordinate Random_firing() {
         Coordinate random_shot;
         do {
             int randRow = rand.nextInt(10) - 1;
             int randCol = rand.nextInt(10) - 1;
             random_shot = new Coordinate(randRow,randCol);
-        }while(!Model.validShotTest(random_shot));
+        }while(!AIvalidShotTest(random_shot));
         return random_shot;
     }
 
-    //Mode 1, find ship in cross
-    private Coordinate Found_line(BattleshipModel Model){
+    //AI function Mode 1, find ship in cross
+    private Coordinate Found_line(){
         if(modone_ini==0) {
             poss=new ArrayList<Coordinate>();
             Coordinate poss1 = new Coordinate(mod_one_point.getRow(), mod_one_point.getCol() - 1);
@@ -119,12 +144,13 @@ public class HardModel extends BattleshipModel {
             Coordinate poss3 = new Coordinate(mod_one_point.getRow() - 1, mod_one_point.getCol());
             Coordinate poss4 = new Coordinate(mod_one_point.getRow() + 1, mod_one_point.getCol());
             if (!Model.validShotTest(poss1))
+            if (!AIvalidShotTest(poss1))
                 poss.add(poss1);
-            if (!Model.validShotTest(poss2))
+            if (!AIvalidShotTest(poss2))
                 poss.add(poss2);
-            if (!Model.validShotTest(poss3))
+            if (!AIvalidShotTest(poss3))
                 poss.add(poss3);
-            if (!Model.validShotTest(poss4))
+            if (!AIvalidShotTest(poss4))
                 poss.add(poss4);
             modone_ini=1;
         }
@@ -132,13 +158,13 @@ public class HardModel extends BattleshipModel {
             Count_size++;
             return poss.get(Count_size-1);
         }
-        else if(!Model.computerHits.contains(Last_hit) && Count_size <=4){
+        else if(!this.playerHits.contains(Last_hit) && Count_size <=4){
             Count_size++;
             return poss.get(Count_size-1);
         }
-        else if(Model.computerHits.contains(Last_hit)){
+        else if(this.playerHits.contains(Last_hit)){
             Count_size=0;
-            mod=1;
+            mod=2;
             modone_ini=0;
             countRow=mod_one_point.getRow()-Last_hit.getRow();
             countCol=mod_one_point.getCol()-Last_hit.getCol();
@@ -149,32 +175,32 @@ public class HardModel extends BattleshipModel {
         return null;
     }
 
-    //Mode 2, use line found in mode one til it miss
-    private Coordinate in_line(BattleshipModel Model){
-        if(!Model.computerHits.contains(Last_hit)){
-            mod=2;
-            return other_side(Model);
+    //AI function Mode 2, use line found in mode one til it miss
+    private Coordinate in_line(){
+        if(!this.playerHits.contains(Last_hit)){
+            mod=3;
+            return other_side();
         }
         Coordinate next=new Coordinate(Last_hit.getRow()+countRow, Last_hit.getCol()+countCol);
-        if(!Model.validShotTest(next))
-            return other_side(Model);
+        if(!AIvalidShotTest(next))
+            return other_side();
         return next;
 
     }
 
-    //mode 3, to different side til it miss
-    private Coordinate other_side(BattleshipModel Model){
+    //AI function mode 3, to different side til it miss
+    private Coordinate other_side(){
         if(mod_three_ini==0) {
             Coordinate next = new Coordinate(mod_one_point.getRow() - countRow, mod_one_point.getCol() - countCol);
             mod_three_ini=1;
-            if(Model.validShotTest(next)){
+            if(AIvalidShotTest(next)){
                 return next;
             }
             else
                 return null;
         }
         Coordinate next = new Coordinate(Last_hit.getRow()-countRow, Last_hit.getCol()-countCol);
-        if(Model.validShotTest(next))
+        if(AIvalidShotTest(next))
             return next;
         else
             return null;
