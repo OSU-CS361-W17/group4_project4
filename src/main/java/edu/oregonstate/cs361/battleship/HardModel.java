@@ -250,10 +250,8 @@ public class HardModel extends BattleshipModel {
         return false;
     }
 
-        this.errorMessage = "smart AI shoots";
-        //playerShot(shot);
     }
 
 
 
-}
+
