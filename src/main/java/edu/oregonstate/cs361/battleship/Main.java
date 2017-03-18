@@ -17,11 +17,13 @@ public class Main {
         //This will listen to GET requests to /model and return a clean new model
         get("/model", (req, res) -> newModel());
         //This will listen to POST requests and expects to receive a game model, as well as location to fire to
-        post("/fire/:row/:col", (req, res) -> fireAt(req));
+        post("/fire/:row/:col/:diff", (req, res) -> fireAt(req));
         //This will listen to POST requests and expects to receive a game model, as well as location to scan
-        post("/scan/:row/:col", (req, res) -> scan(req));
+        post("/scan/:row/:col/:diff", (req, res) -> scan(req));
         //This will listen to POST requests and expects to receive a game model, as well as location to place the ship
         post("/placeShip/:id/:row/:col/:orientation", (req, res) -> placeShip(req));
+        //This will listen to POST requests and expects to recieve a game model, as well as if the game is ready to start
+        post("/startGame/:diff", (req, res) -> startGame(req));
     }
 
     //This function returns a new model
@@ -32,7 +34,7 @@ public class Main {
     }
 
     //This function accepts an HTTP request and deseralizes it into an actual Java object.
-    private static BattleshipModel getModelFromReq(Request req){
+    private static HardModel getHardModelFromReq(Request req) {
         Gson gson = new Gson();
         String result = "";
         try {
@@ -41,10 +43,33 @@ public class Main {
             e.printStackTrace();
         }
 
-        BattleshipModel modelFromReq = null;
+        HardModel modelFromReq = null;
 
         try {
-            modelFromReq = gson.fromJson(result, BattleshipModel.class);
+            modelFromReq = gson.fromJson(result, HardModel.class);
+        }
+
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return modelFromReq;
+    }
+
+
+    //This function accepts an HTTP request and deseralizes it into an actual Java object.
+    private static EasyModel getEasyModelFromReq(Request req){
+        Gson gson = new Gson();
+        String result = "";
+        try {
+            result = java.net.URLDecoder.decode(req.body(),"US-ASCII");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        EasyModel modelFromReq = null;
+
+        try {
+            modelFromReq = gson.fromJson(result, EasyModel.class);
         }
 
         catch (Exception e){
@@ -55,49 +80,104 @@ public class Main {
 
     //This controller
     private static String placeShip(Request req) {
-        BattleshipModel currModel = getModelFromReq(req);
-        currModel.createShipArrays();
         String id = req.params("id");
         String row = req.params("row");
         String col = req.params("col");
         String orientation = req.params("orientation");
-        currModel = currModel.placeShip(id,row,col,orientation);
-        currModel.deleteShipArrays();
+
+        BattleshipModel model = getEasyModelFromReq(req);
+        model.createShipArrays();
+        model = model.placeShip(id,row,col,orientation);
+        model.deleteShipArrays();
         Gson gson = new Gson();
-        return gson.toJson(currModel);
+        return gson.toJson(model);
     }
 
     private static String fireAt(Request req) {
-
-        BattleshipModel currModel = getModelFromReq(req);
-        currModel.createShipArrays();
+        String diff = req.params("diff");
         String row = req.params("row");
         String col = req.params("col");
         int rowInt = Integer.parseInt(row);
         int colInt = Integer.parseInt(col);
-        if(!currModel.shootAtComputer(rowInt,colInt))
-            currModel.shootAtPlayer();
-        currModel.deleteShipArrays();
-        Gson gson = new Gson();
-        return gson.toJson(currModel);
+
+        EasyModel easy;
+        HardModel hard;
+
+        if(diff.equals("easy")) {
+            easy = getEasyModelFromReq(req);
+            easy.createShipArrays();
+            if(!easy.shootAtComputer(rowInt,colInt))
+                easy.shootAtPlayer();
+            easy.deleteShipArrays();
+            Gson gson = new Gson();
+            return gson.toJson(easy);
+        }
+
+        else {
+            hard = getHardModelFromReq(req);
+            hard.createShipArrays();
+            if(!hard.shootAtComputer(rowInt,colInt))
+                hard.shootAtPlayer();
+            hard.deleteShipArrays();
+            Gson gson = new Gson();
+            return gson.toJson(hard);
+        }
     }
 
 
     private static String scan(Request req) {
-
-        BattleshipModel currModel = getModelFromReq(req);
-        currModel.createShipArrays();
+        String diff = req.params("diff");
         String row = req.params("row");
         String col = req.params("col");
         int rowInt = Integer.parseInt(row);
         int colInt = Integer.parseInt(col);
-        currModel.scan(rowInt,colInt);
-        currModel.shootAtPlayer();
-        currModel.deleteShipArrays();
-        Gson gson = new Gson();
-        return gson.toJson(currModel);
+
+        EasyModel easy;
+        HardModel hard;
+
+        if(diff.equals("easy")) {
+            easy = getEasyModelFromReq(req);
+            easy.createShipArrays();
+            easy.scan(rowInt,colInt);
+            easy.shootAtPlayer();
+            easy.deleteShipArrays();
+            Gson gson = new Gson();
+            return gson.toJson(easy);
+        }
+
+        else {
+            hard = getHardModelFromReq(req);
+            hard.createShipArrays();
+            hard.scan(rowInt,colInt);
+            hard.shootAtPlayer();
+            hard.deleteShipArrays();
+            Gson gson = new Gson();
+            return gson.toJson(hard);
+        }
     }
 
+    private static String startGame(Request req) {
+        String diff = req.params("diff");
 
+        EasyModel easy;
+        HardModel hard;
 
+        if(diff.equals("easy")) {
+            easy = getEasyModelFromReq(req);
+            easy.createShipArrays();
+            easy.startGame();
+            easy.deleteShipArrays();
+            Gson gson = new Gson();
+            return gson.toJson(easy);
+        }
+
+        else {
+            hard = getHardModelFromReq(req);
+            hard.createShipArrays();
+            hard.startGame();
+            hard.deleteShipArrays();
+            Gson gson = new Gson();
+            return gson.toJson(hard);
+        }
+    }
 }

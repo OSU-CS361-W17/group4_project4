@@ -8,40 +8,45 @@ import java.util.Random;
  * Created by michaelhilton on 1/4/17.
  */
 public class BattleshipModel {
-    private static int MIN = 1;
-    private static int MAX = 10;
-    private MilitaryShip aircraftCarrier = new MilitaryShip("AircraftCarrier",5, new Coordinate(0,0),new Coordinate(0,0));
-    private StealthShip battleship = new StealthShip("Battleship",4, new Coordinate(0,0),new Coordinate(0,0));
-    private CivilianShip clipper = new CivilianShip("Clipper",3, new Coordinate(0,0),new Coordinate(0,0));
-    private CivilianShip dinghy = new CivilianShip("Dinghy",1, new Coordinate(0,0),new Coordinate(0,0));
-    private StealthShip submarine = new StealthShip("Submarine",2, new Coordinate(0,0),new Coordinate(0,0));
+    protected static int MIN = 1;
+    protected static int MAX = 10;
+    protected MilitaryShip aircraftCarrier = new MilitaryShip("AircraftCarrier",5, new Coordinate(0,0),new Coordinate(0,0));
+    protected StealthShip battleship = new StealthShip("Battleship",4, new Coordinate(0,0),new Coordinate(0,0));
+    protected CivilianShip clipper = new CivilianShip("Clipper",3, new Coordinate(0,0),new Coordinate(0,0));
+    protected CivilianShip dinghy = new CivilianShip("Dinghy",1, new Coordinate(0,0),new Coordinate(0,0));
+    protected StealthShip submarine = new StealthShip("Submarine",2, new Coordinate(0,0),new Coordinate(0,0));
 
-    private MilitaryShip computer_aircraftCarrier = new MilitaryShip("Computer_AircraftCarrier",5, new Coordinate(0,0),new Coordinate(0,0));
-    private StealthShip computer_battleship = new StealthShip("Computer_Battleship",4, new Coordinate(0,0),new Coordinate(0,0));
-    private CivilianShip computer_clipper = new CivilianShip("Computer_Clipper",3, new Coordinate(0,0),new Coordinate(0,0));
-    private CivilianShip computer_dinghy = new CivilianShip("Computer_Dinghy",1, new Coordinate(0,0),new Coordinate(0,0));
-    private StealthShip computer_submarine = new StealthShip("Computer_Submarine",2, new Coordinate(0,0),new Coordinate(0,0));
+    protected MilitaryShip computer_aircraftCarrier = new MilitaryShip("Computer_AircraftCarrier",5, new Coordinate(0,0),new Coordinate(0,0));
+    protected StealthShip computer_battleship = new StealthShip("Computer_Battleship",4, new Coordinate(0,0),new Coordinate(0,0));
+    protected CivilianShip computer_clipper = new CivilianShip("Computer_Clipper",3, new Coordinate(0,0),new Coordinate(0,0));
+    protected CivilianShip computer_dinghy = new CivilianShip("Computer_Dinghy",1, new Coordinate(0,0),new Coordinate(0,0));
+    protected StealthShip computer_submarine = new StealthShip("Computer_Submarine",2, new Coordinate(0,0),new Coordinate(0,0));
 
     ArrayList<Coordinate> playerHits;
-    private ArrayList<Coordinate> playerMisses;
+    protected ArrayList<Coordinate> playerMisses;
     ArrayList<Coordinate> computerHits;
-    private ArrayList<Coordinate> computerMisses;
+    protected ArrayList<Coordinate> computerMisses;
 
-    private ArrayList<Ship> playerShips;
-    private ArrayList<Ship> computerShips;
+    protected ArrayList<Ship> playerShips;
+    protected ArrayList<Ship> computerShips;
 
     boolean scanResult = false;
-    boolean isEasy = true;
-    private String errorMessage = "none";
+    boolean gameInProgress = false;
+    boolean playerWon = false;
+    protected String errorMessage = "none";
 
 
 
     public BattleshipModel() {
-        placeComputerShips();
         playerHits = new ArrayList<>();
         playerMisses= new ArrayList<>();
         computerHits = new ArrayList<>();
         computerMisses= new ArrayList<>();
+    }
+
+    public void startGame() {
+        placeComputerShips();
+        gameInProgress = true;
     }
 
 
@@ -83,20 +88,8 @@ public class BattleshipModel {
         computerShips = null;
     }
 
-    private void placeComputerShips() {
-        if(this.isEasy) {
-            computer_aircraftCarrier.setLocation(new Coordinate(2,2), new Coordinate(2,6));
-            computer_battleship.setLocation(new Coordinate(2,8), new Coordinate(5,8));
-            computer_clipper.setLocation(new Coordinate(4,1), new Coordinate(4,3));
-            computer_dinghy.setLocation(new Coordinate(7,3), new Coordinate(7,3));
-            computer_submarine.setLocation(new Coordinate(9,6), new Coordinate(9,7));
-        }
+    public void placeComputerShips() {
 
-        else {
-            //for (Ship s : computerShips) {
-
-            //}
-        }
     }
 
     public BattleshipModel placeShip(String shipName, String row, String col, String orientation) {
@@ -122,7 +115,7 @@ public class BattleshipModel {
         return this;
     }
 
-    private boolean overlapLoop(Ship test, ArrayList<Ship> ships) {
+    protected boolean overlapLoop(Ship test, ArrayList<Ship> ships) {
         for(Ship s: ships) {
             if(s.overlapTest(test))
                 return true;
@@ -142,6 +135,10 @@ public class BattleshipModel {
         for(Ship s: computerShips) {
             if (s.covers(shot)) {
                 s.shipHit(shot, computerHits);
+                if(computerHits.size() == 15) {
+                    playerWon = true;
+                    gameInProgress = false;
+                }
                 return true;
             }
         }
@@ -168,26 +165,17 @@ public class BattleshipModel {
     }
 
     public void shootAtPlayer() {
-        Random random = new Random();
-        Coordinate shot;
-        do {
-            int randRow = random.nextInt(this.MAX - this.MIN + 1) + this.MIN;
-            int randCol = random.nextInt(this.MAX - this.MIN + 1) + this.MIN;
-            shot = new Coordinate(randRow, randCol);
-        } while (!validShotTest(shot));
 
-        playerShot(shot);
     }
 
-    void playerShot(Coordinate coor) {
-        if(playerMisses.contains(coor)){
-            System.out.println("Dupe");
-
-        }
-
+    public void playerShot(Coordinate coor) {
         for(Ship s: playerShips) {
             if (s.covers(coor)) {
                 s.shipHit(coor, playerHits);
+                if(playerHits.size() == 15) {
+                    playerWon = false;
+                    gameInProgress = false;
+                }
                 return;
             }
         }
