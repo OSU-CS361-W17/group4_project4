@@ -77,6 +77,7 @@ class BattleshipModelTest {
 
     }
 
+    //Name change should look back in Coordinate
     @Test
     void shootAtComputer() {
         BattleshipModel model = new BattleshipModel();
