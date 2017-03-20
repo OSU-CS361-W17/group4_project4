@@ -10,8 +10,8 @@ public class AI_fire {
     Random rand = new Random();
     private List<Coordinate> LastRound_Hit;
     private Coordinate Last_hit;
-    private Coordinate LastLast_hit;
-    private int Count_four = 0;
+    //private Coordinate LastLast_hit;
+    //private int Count_four = 0;
     private int Count_size = 0;
     private int mod = 0;
     private Coordinate mod_one_point;
@@ -20,11 +20,13 @@ public class AI_fire {
     private boolean engage=false;
     private int countRow = 0;
     private int countCol = 0;
-    private int modtwo_type;
+    //private int modtwo_type;
     ArrayList<Coordinate> poss = new ArrayList<Coordinate>();
+
     public Coordinate ai_openfire(BattleshipModel Model){
         Coordinate next_shot = null;
-        if(Model.computerHits.contains(Last_hit) && this.engage==false){
+
+        if(Model.computerHits.contains(this.Last_hit) && this.engage==false){
             this.engage=true;
             this.mod=1;
             this.mod_one_point=this.Last_hit;
@@ -32,7 +34,7 @@ public class AI_fire {
         if(!this.engage){
             return Random_firing(Model);
         }
-        if(mod==0){
+        if(mod==1){
             next_shot=Found_line(Model);
             if(next_shot==null){
                 engage=false;
@@ -40,10 +42,10 @@ public class AI_fire {
                 next_shot=Random_firing(Model);
             }
         }
-        else if(mod==1){
+        else if(mod==2){
             next_shot=in_line(Model);
         }
-        else if(mod==2){
+        else if(mod==3){
             next_shot=other_side(Model);
             if(next_shot==null){
                 engage=false;
@@ -55,7 +57,6 @@ public class AI_fire {
 
         Last_hit=next_shot;
         return next_shot;
-        
     }
 
     public Coordinate Random_firing(BattleshipModel Model) {
@@ -96,7 +97,7 @@ public class AI_fire {
         }
         else if(Model.computerHits.contains(Last_hit)){
             Count_size=0;
-            mod=1;
+            mod=2;
             modone_ini=0;
             countRow=mod_one_point.getRow()-Last_hit.getRow();
             countCol=mod_one_point.getCol()-Last_hit.getCol();
@@ -110,7 +111,7 @@ public class AI_fire {
     //Mode 2, use line found in mode one til it miss
     private Coordinate in_line(BattleshipModel Model){
         if(!Model.computerHits.contains(Last_hit)){
-            mod=2;
+            mod=3;
             return other_side(Model);
         }
         Coordinate next=new Coordinate(Last_hit.getRow()+countRow, Last_hit.getCol()+countCol);
