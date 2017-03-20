@@ -142,10 +142,10 @@ class BattleshipModelTest {
     void testsScan() {
         BattleshipModel model = new BattleshipModel();
         model.scan(2,2);
-        assertEquals(true,model.getScanResult());
+        assertEquals(true,model.scanResult);
 
         model.scan(6,6);
-        assertEquals(false,model.getScanResult());
+        assertEquals(false,model.scanResult);
 
         model.shootAtComputer(1,1) ;
         assertEquals(true, model.computerHits.isEmpty());

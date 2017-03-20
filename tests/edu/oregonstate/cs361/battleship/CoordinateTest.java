@@ -15,19 +15,19 @@ class CoordinateTest {
     }
 
     
-    }
+
 
     @Test
     void getRow() {
         Coordinate c = new Coordinate(1,2);
-        assertEquals(1,c.getAcross());
+        assertEquals(1,c.getRow());
     }
 
    /* @Test
     void setAcross() {
         Coordinate c = new Coordinate(1,1);
         c.setAcross(9);
-        assertEquals(9,c.getAcross());
+        assertEquals(9,c.getRow());
     }
     @Test
     void setDown() {
